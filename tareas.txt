@@ -1,0 +1,5 @@
+hola,Media,31/02/2026,0
+Regar,Media,24/01/2024,0
+hol=a,Media,02/03/2024,0
+Barrer la casa,Alta,02/03/2024,0
+Lavar los platos,Media,02/03/2023,0
