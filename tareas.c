@@ -2,10 +2,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// Función para obtener el número de la última tarea agregada
+int obtenerUltimoNumero(const char *nombreArchivo)
+{
+    FILE *archivo = fopen(nombreArchivo, "r");
+    int ultimoNumero = 0;
 
+    if (archivo != NULL)
+    {
+        char linea[100];
+        while (fgets(linea, sizeof(linea), archivo) != NULL)
+        {
+            int numero;
+            if (sscanf(linea, "%d,", &numero) == 1)
+            {
+                ultimoNumero = numero;
+            }
+        }
+
+        fclose(archivo);
+    }
+
+    return ultimoNumero;
+}
 
 void agregarTarea(const char *nombreArchivo)
 {
+    // Obtener el número de la última tarea agregada
+    int ultimoNumero = obtenerUltimoNumero(nombreArchivo);
+
+    // Incrementar el contador de tareas leídas hasta el momento
+    int contador = ultimoNumero + 1;
+
     char descripcion[100];
     int prioridad1;
     char prioridad[20];
@@ -15,30 +43,48 @@ void agregarTarea(const char *nombreArchivo)
     scanf(" %99[^\n]", descripcion); // Lee la cadena hasta que encuentra en caracter de salto de linea
 
     // Limpia el búfer del teclado
-    fflush(stdin);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
 
-    printf("Ingrese el numero de la prioridad de la tarea: \n1. Alta\n2. Media\n3. Baja\n");
-    scanf("%d", &prioridad1);
-
-    switch (prioridad1)
+    // Validación para que prioridad1 sea 1, 2 o 3
+    do
     {
-    case 1:
-        strcpy(prioridad, "Alta");
-        break;
-    case 2:
-        strcpy(prioridad, "Media");
-        break;
-    case 3:
-        strcpy(prioridad, "Baja");
-        break;
-    default:
-        break;
-    }
+        printf("Ingrese el numero de la prioridad de la tarea %d: \n1. Alta\n2. Media\n3. Baja\n", contador);
+        if (scanf("%d", &prioridad1) != 1 || (prioridad1 < 1 || prioridad1 > 3))
+        {
+            printf("Por favor, ingrese un valor válido (1, 2 o 3).\n");
+
+            // Limpia el búfer del teclado en caso de entrada no válida
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+
+            prioridad1 = 0; // Reinicia prioridad1 para que el bucle continúe
+        }
+        else
+        {
+            // Convertir la prioridad a cadena
+            switch (prioridad1)
+            {
+            case 1:
+                strcpy(prioridad, "Alta");
+                break;
+            case 2:
+                strcpy(prioridad, "Media");
+                break;
+            case 3:
+                strcpy(prioridad, "Baja");
+                break;
+            default:
+                break;
+            }
+        }
+    } while (prioridad1 < 1 || prioridad1 > 3);
 
     // Limpia el búfer del teclado
     // fflush(stdin);
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
 
     // Lo que hace este do/while es pedir una fecha hasta que se ingrese una con el formato correcto
     do
@@ -52,10 +98,11 @@ void agregarTarea(const char *nombreArchivo)
         }
     } while (!validarFormatoFecha(fecha));
 
-    FILE *archivo = fopen(nombreArchivo, "a");//Abre el archivo para escritura al final
+    FILE *archivo = fopen(nombreArchivo, "a"); // Abre el archivo para escritura al final
     if (archivo != NULL)
     {
-        fprintf(archivo, "%s,%s,%s,0\n", descripcion, prioridad, fecha);
+        fprintf(archivo, "%d,%s,%s,%s,%d\n", (obtenerUltimoNumero(nombreArchivo) + 1), descripcion, prioridad, fecha, 0);
+
         fclose(archivo);
         printf("Tarea agregada correctamente.\n");
     }
@@ -87,18 +134,18 @@ void mostrarTareas(const char *nombreArchivo)
         char linea[100];
         while (fgets(linea, sizeof(linea), archivo) != NULL)
         {
-            char *descripcion = strtok(linea, ",");
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
             char *prioridad = strtok(NULL, ",");
             char *fecha = strtok(NULL, ",");
             char *estado = strtok(NULL, ",");
 
-            if (descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
             {
-                int estadoInt = atoi(estado);//transforma la cadena estado en entero
+                int estadoInt = atoi(estado); // transforma la cadena estado en entero
                 if (estadoInt == 0)
                 {
-                    printf("Descripción: %s, Prioridad: %s, Fecha de Entrega: %s, Estado: %s\n", descripcion, prioridad, fecha, estado);
-                }
+                    printf("%s. %s,     PRIORIDAD: %s,      FECHA DE ENTREGA: %s\n",numero, descripcion, prioridad, fecha);                }
             }
             else
             {
@@ -114,11 +161,10 @@ void mostrarTareas(const char *nombreArchivo)
     }
 }
 
-
-
 // Función para marcar una tarea como completada en el archivo
 void marcarComoCompletada(const char *nombreArchivo, const char *descripcion)
 {
+
     // Implementa la lógica para marcar una tarea como completada
 }
 
