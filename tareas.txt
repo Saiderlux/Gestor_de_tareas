@@ -1,5 +1,8 @@
-hola,Media,31/02/2026,0
-Regar,Media,24/01/2024,0
-hol=a,Media,02/03/2024,0
-Barrer la casa,Alta,02/03/2024,0
-Lavar los platos,Media,02/03/2023,0
+1,hacer del ab¤o,Alta,01/01/2023,0
+2,hacer pipi,Alta,01/01/2023,0
+3,hacer tarea,Media,01/01/2023,0
+4,Hacer tarea,À“÷©¨,01/01/2023,0
+5,hacer popiiiis,Baja,01/01/2023,0
+6,ir al ba¤o,Media,03/05/2024,0
+7,hacer la comida de ma¤ana,Alta,01/01/2023,0
+8,VENDER LA DROGA,Baja,01/01/2023,0
