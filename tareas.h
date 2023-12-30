@@ -5,7 +5,7 @@
 void agregarTarea(const char *nombreArchivo);
 void mostrarTareas(const char *nombreArchivo);
 void marcarComoCompletada(const char *nombreArchivo, const char *descripcion);
-void eliminarTarea(const char *nombreArchivo, const char *descripcion);
+void eliminarTareaPorNumero(const char *nombreArchivo, int numeroEliminar);
 void mostrarTareasPorFecha(const char *nombreArchivo);
 void mostrarTareasPorPrioridad(const char *nombreArchivo);
 
