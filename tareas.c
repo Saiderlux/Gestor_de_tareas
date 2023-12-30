@@ -232,7 +232,6 @@ void mostrarTareasPorFecha(const char *nombreArchivo)//terminado
 }
 
 // Función para mostrar las tareas por prioridad
-
 void mostrarTareasPorPrioridad(const char *nombreArchivo)
 {
     int numPrioridad;
@@ -312,11 +311,64 @@ void mostrarTareasPorPrioridad(const char *nombreArchivo)
 void marcarComoCompletada(const char *nombreArchivo, const char *descripcion)
 {
 
-    // Implementa la lógica para marcar una tarea como completada
 }
-
-// Función para eliminar una tarea del archivo
-void eliminarTarea(const char *nombreArchivo, const char *descripcion)
+//Funcion que elimina las tareas especificando el numero de la tarea.
+void eliminarTareaPorNumero(const char *nombreArchivo, int numeroEliminar)
 {
-    // Implementa la lógica para eliminar una tarea
+    FILE *archivoEntrada = fopen(nombreArchivo, "r");
+    FILE *archivoSalida = fopen("temporal.txt", "w");
+
+    if (archivoEntrada != NULL && archivoSalida != NULL)
+    {
+        char linea[200];
+        int nuevaNumeracion = 1; // Nueva numeración que reemplazará al número eliminado
+
+        while (fgets(linea, sizeof(linea), archivoEntrada) != NULL)
+        {
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
+            char *prioridad = strtok(NULL, ",");
+            char *fecha = strtok(NULL, ",");
+            char *estado = strtok(NULL, ",");
+
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
+            {
+                int numeroTarea = atoi(numero);
+
+                if (numeroTarea == numeroEliminar)
+                {
+                    // No escribir la línea, ya que se está eliminando
+                }
+                else
+                {
+                    // Escribir la línea con la nueva numeración
+                    fprintf(archivoSalida, "%d,%s,%s,%s,%s", nuevaNumeracion, descripcion, prioridad, fecha, estado);
+                    nuevaNumeracion++;
+                }
+            }
+            else
+            {
+                printf("Error al leer la línea del archivo.\n");
+            }
+        }
+
+        fclose(archivoEntrada);
+        fclose(archivoSalida);
+
+        if (nuevaNumeracion > 1) // Verificar si se eliminó alguna tarea
+        {
+            remove(nombreArchivo);
+            rename("temporal.txt", nombreArchivo);
+            printf("Tarea eliminada correctamente.\n");
+        }
+        else
+        {
+            remove("temporal.txt");
+            printf("No se encontró una tarea con el número especificado.\n");
+        }
+    }
+    else
+    {
+        printf("No se pudo abrir el archivo.\n");
+    }
 }
