@@ -11,3 +11,6 @@
 11,Mandarinar,Baja,02/02/2024,0
 12,no se jajaja,Media,02/02/2024,0
 13,guayabear,Media,02/02/2024,0
+14,HAblar con do¤a mary,Baja,01/01/2024,0
+15,Mandar papeles,Media,01/01/2024,0
+16,ya ni se que poner,Media,01/01/2024,0
