@@ -44,7 +44,8 @@ int menuMostrar()
             mostrarTareasPorFecha(nombreArchivo);
             break;
         case 3:
-           
+           mostrarTareasPorPrioridad(nombreArchivo);
+            break;
         case 0:
             printf("Saliendo del programa. ¡Hasta luego!\n");
             break;
