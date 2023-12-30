@@ -32,8 +32,7 @@ void agregarTarea(const char *nombreArchivo) // terminado
     // Obtener el número de la última tarea agregada
     int ultimoNumero = obtenerUltimoNumero(nombreArchivo);
 
-    // Incrementar el contador de tareas leídas hasta el momento
-    int contador = ultimoNumero + 1;
+ 
 
     char descripcion[100];
     int prioridad1;
@@ -51,7 +50,7 @@ void agregarTarea(const char *nombreArchivo) // terminado
     // Validación para que prioridad1 sea 1, 2 o 3
     do
     {
-        printf("Ingrese el numero de la prioridad de la tarea %d: \n1. Alta\n2. Media\n3. Baja\n", contador);
+        printf("Ingrese el numero de la prioridad de la tarea : \n1. Alta\n2. Media\n3. Baja\n");
         if (scanf("%d", &prioridad1) != 1 || (prioridad1 < 1 || prioridad1 > 3))
         {
             printf("Por favor, ingrese un valor válido (1, 2 o 3).\n");
@@ -181,9 +180,9 @@ void mostrarTareas(const char *nombreArchivo) // terminado aunque quiero añadir
     }
 }
 
+// Función para mostrar las tareas por fecha
 void mostrarTareasPorFecha(const char *nombreArchivo)//terminado
 {
-
     char fecha_consulta[20];
     FILE *archivo = fopen(nombreArchivo, "r");
     if (archivo != NULL)
@@ -229,6 +228,83 @@ void mostrarTareasPorFecha(const char *nombreArchivo)//terminado
         printf("No se pudo abrir el archivo.\n");
     }
     fclose(archivo);
+    printf("\n");
+}
+
+// Función para mostrar las tareas por prioridad
+
+void mostrarTareasPorPrioridad(const char *nombreArchivo)
+{
+    int numPrioridad;
+    FILE *archivo = fopen(nombreArchivo, "r");
+    if (archivo != NULL)
+    {
+        printf("Ingrese el número de prioridad a consultar (1: Alta, 2: Media, 3: Baja): ");
+        if (scanf("%d", &numPrioridad) != 1 || numPrioridad < 1 || numPrioridad > 3)
+        {
+            printf("Prioridad no válida.\n");
+            fclose(archivo);
+            return;
+        }
+
+        char prioridadBuscada[20]; // Para almacenar la prioridad correspondiente al número
+
+        // Asignar la cadena correspondiente a la prioridad seleccionada
+        switch (numPrioridad)
+        {
+        case 1:
+            strcpy(prioridadBuscada, "Alta");
+            break;
+        case 2:
+            strcpy(prioridadBuscada, "Media");
+            break;
+        case 3:
+            strcpy(prioridadBuscada, "Baja");
+            break;
+        default:
+            break;
+        }
+
+        printf("Lista de Tareas Pendientes:\n");
+        printf("%-10s%-30s%-20s%-20s\n", "Numero", "Descripcion", "Prioridad", "Fecha de Entrega");
+
+        char linea[200];
+        int tareasEncontradas = 0;
+
+        while (fgets(linea, sizeof(linea), archivo) != NULL)
+        {
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
+            char *prioridad = strtok(NULL, ",");
+            char *fecha = strtok(NULL, ",");
+            char *estado = strtok(NULL, ",");
+
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
+            {
+                // Comparar prioridad en el archivo con la prioridad buscada
+                if (strcmp(prioridad, prioridadBuscada) == 0)
+                {
+                    printf("%-10s%-30s%-20s%-20s\n", numero, descripcion, prioridad, fecha);
+                    tareasEncontradas = 1;
+                }
+            }
+            else
+            {
+                printf("Error al leer la línea del archivo.\n");
+            }
+        }
+
+        if (!tareasEncontradas)
+        {
+            printf("No hay tareas con esa prioridad.\n");
+        }
+
+        fclose(archivo);
+    }
+    else
+    {
+        printf("No se pudo abrir el archivo.\n");
+    }
     printf("\n");
 }
 
