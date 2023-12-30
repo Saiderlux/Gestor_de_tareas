@@ -9,9 +9,10 @@ int menuMostrar();
 int main()
 {
     const char *nombreArchivo = "tareas.txt";
-
-    agregarTarea(nombreArchivo);
-    menuMostrar();
+    int numero;
+    printf("Introduce el numero de la tarea a eliminar.\n");
+    scanf("%d", &numero);
+    eliminarTareaPorNumero(nombreArchivo, numero);
 
     return 0;
 }

@@ -1,16 +1,14 @@
-1,Vender comida,Baja,01/01/2023,0
-2,Hola amigos,Alta,02/03/2023,0
-3,tender la ropa,Alta,29/12/2023,0
-4,Vender comida a do¤a luisa,Media,01/01/2024,0
-5,Vender comidita,Media,01/01/2024,0
-6,Hacer labores,Media,01/01/2024,0
-7,Vender marihuana,Media,01/01/2024,0
-8,Lavar guayabas,Baja,01/01/2024,0
-9,Vender peras,Alta,01/02/2024,0
-10,Vender comida a Mariana,Alta,01/03/2024,0
-11,Mandarinar,Baja,02/02/2024,0
-12,no se jajaja,Media,02/02/2024,0
-13,guayabear,Media,02/02/2024,0
-14,HAblar con do¤a mary,Baja,01/01/2024,0
-15,Mandar papeles,Media,01/01/2024,0
-16,ya ni se que poner,Media,01/01/2024,0
+1,tender la ropa,Alta,29/12/2023,0
+2,Vender comida a do¤a luisa,Media,01/01/2024,0
+3,Vender comidita,Media,01/01/2024,0
+4,Hacer labores,Media,01/01/2024,0
+5,Vender marihuana,Media,01/01/2024,0
+6,Lavar guayabas,Baja,01/01/2024,0
+7,Vender peras,Alta,01/02/2024,0
+8,Vender comida a Mariana,Alta,01/03/2024,0
+9,Mandarinar,Baja,02/02/2024,0
+10,no se jajaja,Media,02/02/2024,0
+11,guayabear,Media,02/02/2024,0
+12,HAblar con do¤a mary,Baja,01/01/2024,0
+13,Mandar papeles,Media,01/01/2024,0
+14,ya ni se que poner,Media,01/01/2024,0
