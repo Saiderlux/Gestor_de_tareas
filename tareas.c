@@ -3,8 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stddef.h>
+
+
+
 // Función para obtener el número de la última tarea agregada
-int obtenerUltimoNumero(const char *nombreArchivo) // terminado
+int obtenerUltimoNumero(const char *nombreArchivo)
 {
     FILE *archivo = fopen(nombreArchivo, "r");
     int ultimoNumero = 0;
@@ -31,21 +35,17 @@ void agregarTarea(const char *nombreArchivo) // terminado
 {
     // Obtener el número de la última tarea agregada
     int ultimoNumero = obtenerUltimoNumero(nombreArchivo);
-
- 
-
     char descripcion[100];
     int prioridad1;
     char prioridad[20];
     char fecha[20];
-
+    printf("Esta es la tarea numero %d\n", ultimoNumero + 1);
     printf("Ingrese la descripción de la tarea: ");
     scanf(" %99[^\n]", descripcion); // Lee la cadena hasta que encuentra en caracter de salto de linea
 
     // Limpia el búfer del teclado
     int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
+    while ((c = getchar()) != '\n' && c != EOF);
 
     // Validación para que prioridad1 sea 1, 2 o 3
     do
@@ -112,7 +112,7 @@ void agregarTarea(const char *nombreArchivo) // terminado
     }
 }
 
-int validarFormatoFecha(const char *fecha)
+int validarFormatoFecha(const char *fecha) // terminado
 {
     // Verifica que la fecha tenga el formato dd/mm/yyyy
     int dia, mes, anio;
@@ -181,7 +181,7 @@ void mostrarTareas(const char *nombreArchivo) // terminado aunque quiero añadir
 }
 
 // Función para mostrar las tareas por fecha
-void mostrarTareasPorFecha(const char *nombreArchivo)//terminado
+void mostrarTareasPorFecha(const char *nombreArchivo) // terminado
 {
     char fecha_consulta[20];
     FILE *archivo = fopen(nombreArchivo, "r");
@@ -232,7 +232,7 @@ void mostrarTareasPorFecha(const char *nombreArchivo)//terminado
 }
 
 // Función para mostrar las tareas por prioridad
-void mostrarTareasPorPrioridad(const char *nombreArchivo)
+void mostrarTareasPorPrioridad(const char *nombreArchivo) // terminado
 {
     int numPrioridad;
     FILE *archivo = fopen(nombreArchivo, "r");
@@ -307,12 +307,143 @@ void mostrarTareasPorPrioridad(const char *nombreArchivo)
     printf("\n");
 }
 
-// Función para marcar una tarea como completada en el archivo
-void marcarComoCompletada(const char *nombreArchivo, const char *descripcion)
+void marcarComoCompletada(const char *nombreArchivo, int numeroCompletar)
 {
+    FILE *archivoEntrada = fopen(nombreArchivo, "r");
+    FILE *archivoTemporal = fopen("temporal.txt", "w");
 
+    if (archivoEntrada != NULL && archivoTemporal != NULL)
+    {
+        char linea[200];
+
+        while (fgets(linea, sizeof(linea), archivoEntrada) != NULL)
+        {
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
+            char *prioridad = strtok(NULL, ",");
+            char *fecha = strtok(NULL, ",");
+            char *estado = strtok(NULL, ",");
+
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
+            {
+                int numeroTarea = atoi(numero);
+
+                if (numeroTarea == numeroCompletar)
+                {
+                    // Cambiar el estado a completado (puedes ajustar el valor según tus necesidades)
+                    fprintf(archivoTemporal, "%d,%s,%s,%s,%d\n", numeroTarea, descripcion, prioridad, fecha, 1);
+                }
+                else
+                {
+                    // Mantener la tarea sin cambios
+                    fprintf(archivoTemporal, "%d,%s,%s,%s,%s", numeroTarea, descripcion, prioridad, fecha, estado);
+                }
+            }
+            else
+            {
+                printf("Error al leer la línea del archivo.\n");
+            }
+        }
+
+        fclose(archivoEntrada);
+        fclose(archivoTemporal);
+
+        remove(nombreArchivo);
+        rename("temporal.txt", nombreArchivo);
+        printf("Tarea marcada como completada correctamente.\n");
+    }
+    else
+    {
+        printf("No se pudo abrir algún archivo.\n");
+    }
 }
-//Funcion que elimina las tareas especificando el numero de la tarea.
+
+void guardarCompletadas(const char *nombreArchivo, const char *nombreArchivoCompletadas) {
+    FILE *archivoEntrada = fopen(nombreArchivo, "r");
+    FILE *archivoSalida = fopen("temporal.txt", "w");
+    FILE *archivoCompletadas = fopen(nombreArchivoCompletadas, "a");
+
+    if (archivoEntrada != NULL && archivoSalida != NULL && archivoCompletadas != NULL) {
+        int nuevaNumeracionCompletadas = obtenerUltimoNumero(nombreArchivoCompletadas) + 1;
+
+        char linea[200];
+        while (fgets(linea, sizeof(linea), archivoEntrada) != NULL) {
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
+            char *prioridad = strtok(NULL, ",");
+            char *fecha = strtok(NULL, ",");
+            char *estadoStr = strtok(NULL, ",");
+
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estadoStr != NULL) {
+                int estado = atoi(estadoStr);
+
+                if (estado != 0) {
+                    // Mover la tarea al archivo de tareas completadas
+                    fprintf(archivoCompletadas, "%d,%s,%s,%s,%d\n", nuevaNumeracionCompletadas, descripcion, prioridad, fecha, estado);
+                    nuevaNumeracionCompletadas++;
+                } else {
+                    // Mantener la tarea en el archivo original con nueva numeración
+                    fprintf(archivoSalida, "%d,%s,%s,%s,%d\n", obtenerUltimoNumero(nombreArchivo) + 1, descripcion, prioridad, fecha, estado);
+                }
+            } else {
+                printf("Error al leer la línea del archivo.\n");
+            }
+        }
+
+        fclose(archivoEntrada);
+        fclose(archivoSalida);
+        fclose(archivoCompletadas);
+
+        // Actualizar el archivo original con las tareas pendientes
+        remove(nombreArchivo);
+        rename("temporal.txt", nombreArchivo);
+
+        printf("Tareas completadas movidas correctamente al archivo de tareas completadas.\n");
+    } else {
+        printf("No se pudo abrir algún archivo.\n");
+    }
+}
+
+void ajustarNumeracionAutomatica(const char *nombreArchivo) {
+    FILE *archivoEntrada = fopen(nombreArchivo, "r");
+    FILE *archivoSalida = fopen("temporal.txt", "w");
+
+    if (archivoEntrada != NULL && archivoSalida != NULL) {
+        int nuevaNumeracion = 1;
+
+        char linea[200];
+        while (fgets(linea, sizeof(linea), archivoEntrada) != NULL) {
+            char *numero = strtok(linea, ",");
+            char *descripcion = strtok(NULL, ",");
+            char *prioridad = strtok(NULL, ",");
+            char *fecha = strtok(NULL, ",");
+            char *estadoStr = strtok(NULL, ",");
+
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estadoStr != NULL) {
+                int estado = atoi(estadoStr);
+
+                // Mantener la tarea en el archivo original con nueva numeración
+                fprintf(archivoSalida, "%d,%s,%s,%s,%d\n", nuevaNumeracion, descripcion, prioridad, fecha, estado);
+                nuevaNumeracion++;
+            } else {
+                printf("Error al leer la línea del archivo.\n");
+            }
+        }
+
+        fclose(archivoEntrada);
+        fclose(archivoSalida);
+
+        // Actualizar el archivo original con las tareas pendientes y nueva numeración
+        remove(nombreArchivo);
+        rename("temporal.txt", nombreArchivo);
+
+        printf("Numeración del archivo ajustada automáticamente.\n");
+    } else {
+        printf("No se pudo abrir algún archivo.\n");
+    }
+}
+
+// Funcion que elimina las tareas especificando el numero de la tarea.
 void eliminarTareaPorNumero(const char *nombreArchivo, int numeroEliminar)
 {
     FILE *archivoEntrada = fopen(nombreArchivo, "r");
