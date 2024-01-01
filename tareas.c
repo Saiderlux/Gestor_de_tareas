@@ -7,7 +7,16 @@
 
 
 
-// Función para obtener el número de la última tarea agregada
+/*
+ * Obtiene el número de la última tarea agregada en el archivo
+ * 
+ * Abre el archivo en modo lectura
+ * Lee cada línea del archivo
+ * Extrae el primer número de cada línea usando sscanf
+ * Compara el número extraído contra el último guardado
+ * Si es mayor, actualiza el último número
+ * Al finalizar la lectura, devuelve el último número encontrado
+*/
 int obtenerUltimoNumero(const char *nombreArchivo)
 {
     FILE *archivo = fopen(nombreArchivo, "r");
@@ -31,6 +40,25 @@ int obtenerUltimoNumero(const char *nombreArchivo)
     return ultimoNumero;
 }
 
+
+/* 
+ * Agrega una nueva tarea al final del archivo
+ *
+ * Solicita al usuario los datos de la nueva tarea:
+ * - Descripción
+ * - Prioridad (número entre 1-3)
+ * - Fecha de finalización (validando formato)
+ * 
+ * Obtiene el número de la última tarea con obtenerUltimoNumero()
+ * Incrementa en 1 para asignar a la nueva tarea
+ * 
+ * Abre el archivo en modo append para escritura al final
+ * Escribe la tarea en una nueva línea con el formato:
+ *   numero,descripcion,prioridad,fecha,estado 
+ * Cierra el archivo
+ *
+ * Imprime mensaje de éxito o error
+*/ 
 void agregarTarea(const char *nombreArchivo) // terminado
 {
     // Obtener el número de la última tarea agregada
@@ -112,6 +140,18 @@ void agregarTarea(const char *nombreArchivo) // terminado
     }
 }
 
+
+/*
+ * Valida que un fecha tenga formato válido dd/mm/aaaa
+ * 
+ * Verifica con sscanf que tenga 3 enteros separados por /
+ * Verifica rango de día, mes y año
+ * Compara que no sea fecha anterior a hoy
+ *
+ * Retorna:
+ * 1 si formato es válido
+ * 0 si formato es inválido
+*/
 int validarFormatoFecha(const char *fecha) // terminado
 {
     // Verifica que la fecha tenga el formato dd/mm/yyyy
@@ -144,7 +184,19 @@ int validarFormatoFecha(const char *fecha) // terminado
     return 0;
 }
 
-// Función para mostrar todas las tareas en el archivo
+
+/*
+ * Muestra todas las tareas pendientes en el archivo
+ * 
+ * Abre el archivo en modo lectura
+ * Lee cada línea 
+ * Extrae los campos número, descripción, prioridad y fecha con strtok
+ * Imprime los campos en formato de tabla
+ * 
+ * Maneja errores en lectura de líneas
+ *
+ * Al finalizar cierra el archivo
+*/
 void mostrarTareas(const char *nombreArchivo) // terminado aunque quiero añadir un menu para mostrarlas dependiendo la prioridad o la fecha
 {
     FILE *archivo = fopen(nombreArchivo, "r");
@@ -180,7 +232,19 @@ void mostrarTareas(const char *nombreArchivo) // terminado aunque quiero añadir
     }
 }
 
-// Función para mostrar las tareas por fecha
+
+/*
+ * Muestra las tareas con una fecha específica
+ * 
+ * Solicita al usuario una fecha y valida formato
+ * Abre el archivo en modo lectura 
+ * Lee cada línea comparando la fecha 
+ * Imprime las tareas con fecha coincidente
+ *
+ * Maneja errores en lectura de líneas
+ * 
+ * Al finalizar cierra el archivo
+*/
 void mostrarTareasPorFecha(const char *nombreArchivo) // terminado
 {
     char fecha_consulta[20];
@@ -231,7 +295,20 @@ void mostrarTareasPorFecha(const char *nombreArchivo) // terminado
     printf("\n");
 }
 
-// Función para mostrar las tareas por prioridad
+
+/*
+ * Muestra las tareas con una prioridad específica
+ * 
+ * Solicita al usuario un número de prioridad (1-3)
+ * Convierte el número a cadena de prioridad
+ * Abre el archivo en modo lectura
+ * Lee cada línea comparando la prioridad
+ * Imprime las tareas con prioridad coincidente
+ *
+ * Maneja errores en lectura de líneas y prioridad no válida
+ *
+ * Al finalizar cierra el archivo
+*/  
 void mostrarTareasPorPrioridad(const char *nombreArchivo) // terminado
 {
     int numPrioridad;
@@ -307,6 +384,17 @@ void mostrarTareasPorPrioridad(const char *nombreArchivo) // terminado
     printf("\n");
 }
 
+
+/*
+ * Marca una tarea como completada cambiando su estado a 1
+ * 
+ * Abre el archivo original y uno nuevo temporal en modo escritura
+ * Lee cada línea del original
+ * Si el número coincide con el indicado, cambia estado a 1
+ * Escribe la línea modificada o original al temporal
+ *
+ * Al finalizar, cierra archivos, elimina original y renombra temporal
+*/
 void marcarComoCompletada(const char *nombreArchivo, int numeroCompletar)
 {
     FILE *archivoEntrada = fopen(nombreArchivo, "r");
@@ -358,6 +446,17 @@ void marcarComoCompletada(const char *nombreArchivo, int numeroCompletar)
     }
 }
 
+
+/*
+ * Mueve las tareas completadas a otro archivo 
+ * 
+ * Abre el original, uno temporal y el de completadas en modo escritura
+ * Lee cada línea verificando estado completado (distinto de 0)
+ * Escribe la tarea al archivo de completadas con nueva numeración incremental
+ * Escribe las pendientes al temporal con misma numeración
+ *
+ * Al finalizar, cierra archivos, elimina original y renombra temporal
+*/
 void guardarCompletadas(const char *nombreArchivo, const char *nombreArchivoCompletadas) {
     FILE *archivoEntrada = fopen(nombreArchivo, "r");
     FILE *archivoSalida = fopen("temporal.txt", "w");
@@ -404,6 +503,15 @@ void guardarCompletadas(const char *nombreArchivo, const char *nombreArchivoComp
     }
 }
 
+
+/*
+ * Reenumera las tareas de manera automática
+ *
+ * Abre el original y uno nuevo temporal en modo escritura
+ * Lee cada línea y escribe al temporal con numeración incremental
+ * 
+ * Al finalizar, cierra archivos, elimina original y renombra temporal
+*/
 void ajustarNumeracionAutomatica(const char *nombreArchivo) {
     FILE *archivoEntrada = fopen(nombreArchivo, "r");
     FILE *archivoSalida = fopen("temporal.txt", "w");
@@ -443,7 +551,17 @@ void ajustarNumeracionAutomatica(const char *nombreArchivo) {
     }
 }
 
-// Funcion que elimina las tareas especificando el numero de la tarea.
+/*
+ * Elimina una tarea especificando su número 
+ *
+ * Abre el original y uno nuevo temporal en modo escritura
+ * Lee cada línea del original
+ * Si el número no coincide con el indicado, escribe la línea al temporal
+ * Si coincide, omite escribirla
+ *
+ * Al finalizar, cierra archivos, verifica si se eliminó 
+*  y en ese caso elimina original y renombra temporal
+*/
 void eliminarTareaPorNumero(const char *nombreArchivo, int numeroEliminar)
 {
     FILE *archivoEntrada = fopen(nombreArchivo, "r");
