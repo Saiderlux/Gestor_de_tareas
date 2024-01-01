@@ -1,5 +1,6 @@
 // programa para hacer listas y guardarlas en un archivo de texto
 #include "tareas.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,13 +8,18 @@
 int menuMostrar();
 
 int main()
-{
-    const char *nombreArchivo = "tareas.txt";
+{   
     int numero;
-    printf("Introduce el numero de la tarea a eliminar.\n");
-    scanf("%d", &numero);
-    eliminarTareaPorNumero(nombreArchivo, numero);
-
+    const char *nombreArchivo = "tareas.txt";
+    const char *nombreArchivoCompletadas = "tareas_completadas.txt";
+    /*
+        printf("Introduce un numero.\n");
+        scanf("%d", &numero);
+        marcarComoCompletada(nombreArchivo, numero);
+    */
+    //guardarCompletadas(nombreArchivo, nombreArchivoCompletadas);
+   ajustarNumeracionAutomatica(nombreArchivo);
+   
     return 0;
 }
 
