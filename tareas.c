@@ -245,52 +245,49 @@ void mostrarTareas(const char *nombreArchivo) // terminado aunque quiero añadir
  * 
  * Al finalizar cierra el archivo
 */
-void mostrarTareasPorFecha(const char *nombreArchivo) // terminado
-{
+void mostrarTareasPorFecha(const char *nombreArchivo) {
     char fecha_consulta[20];
     FILE *archivo = fopen(nombreArchivo, "r");
-    if (archivo != NULL)
-    {
-        do
-        {
+    int encontradas = 0;
+
+    if (archivo != NULL) {
+        do {
             printf("Ingrese la fecha de finalización de la tarea (formato dd/mm/yyyy): ");
             scanf("%19s", fecha_consulta);
 
-            if (!validarFormatoFecha(fecha_consulta))
-            {
+            if (!validarFormatoFecha(fecha_consulta)) {
                 printf("Formato de fecha no válido. Inténtelo de nuevo.\n");
             }
         } while (!validarFormatoFecha(fecha_consulta));
 
-        printf("Lista de Tareas Pendientes:\n");
+        printf("\nLista de Tareas Pendientes:\n");
         printf("%-10s%-30s%-20s%-20s\n", "Numero", "Descripcion", "Prioridad", "Fecha de Entrega");
 
         char linea[200];
-        while (fgets(linea, sizeof(linea), archivo) != NULL)
-        {
+        while (fgets(linea, sizeof(linea), archivo) != NULL) {
             char *numero = strtok(linea, ",");
             char *descripcion = strtok(NULL, ",");
             char *prioridad = strtok(NULL, ",");
             char *fecha = strtok(NULL, ",");
             char *estado = strtok(NULL, ",");
 
-            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL)
-            {
-                if (strcmp(fecha_consulta, fecha) == 0)
-                {
+            if (numero != NULL && descripcion != NULL && prioridad != NULL && fecha != NULL && estado != NULL) {
+                if (strcmp(fecha_consulta, fecha) == 0) {
                     printf("%-10s%-30s%-20s%-20s\n", numero, descripcion, prioridad, fecha);
+                    encontradas = 1;
                 }
-            }
-            else
-            {
+            } else {
                 printf("Error al leer la línea del archivo.\n");
             }
         }
-    }
-    else
-    {
+
+        if (!encontradas) {
+            printf("**No se encontraron tareas con la fecha especificada.**\n");
+        }
+    } else {
         printf("No se pudo abrir el archivo.\n");
     }
+
     fclose(archivo);
     printf("\n");
 }
